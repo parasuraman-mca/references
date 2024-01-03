@@ -1,0 +1,304 @@
+-------------
+
+
+// Function to fetch live rates from CoinGecko API
+const fetchLiveRates = async () => {
+  try {
+    const response = await axios.get(
+      'https://api.coingecko.com/api/v3/simple/price',
+      {
+        params: {
+          ids: 'bitcoin,binancecoin,ethereum',
+          vs_currencies: 'inr,btc,bnb,eth',
+        },
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching live rates:', error.message);
+    throw error;
+  }
+};
+
+exports.addexchngerate = async (req, res) => {
+  try {
+    // Fetch live exchange rates
+    const liveRates = await fetchLiveRates();
+
+    // Extract exchange rates from the fetched data
+    // const {
+    //   bitcoin: { inr:BTCINR, bnb:BTCBNB, eth:BTCETH },
+    //   binancecoin: { inr, btc, eth },
+    //   ethereum: { inr :ETHINR, btc: ETHBTC, bnb: ETHBNB },
+    // } = liveRates;
+    // console.log(liveRates);
+
+    const {
+      bitcoin: { inr: BTCINR, bnb: BTCBNB, eth: BTCETH },
+      binancecoin: { inr: BNBINR, btc: BNBTOBTC, eth: BNBTOETH },
+      ethereum: { inr: ETHINR, btc: ETHBTC, bnb: ETHBNB },
+    } = liveRates;
+
+    // Extract exchange rates from the request body
+    const {
+      BNBtoBTC,
+      BNBtoETH,
+      BNBtoINR,
+      ETHtoBNB,
+      ETHtoBTC,
+      ETHtoINR,
+      INRtoBTC,
+      INRtoBNB,
+      INRtoETH,
+      BTCtoBNB,
+      BTCtoETH,
+      BTCtoINR,
+    } = req.body;
+
+    // Input validation
+    // Uncomment the validation code when needed
+    // if (typeof BNBtoBTC !== 'number' || typeof BNBtoETH !== 'number' || typeof BNBtoINR !== 'number' || ...) {
+    //   return res.status(400).json({ message: 'Invalid exchange rate data format' });
+    // }
+
+    // Combine live rates with the rates from the request body
+    const currentDate = new Date();
+    // const exchangeRateData = {
+    //   BNBtoBTC: BNBtoBTC || liveRates.binancecoin.btc,
+    //   BNBtoETH: BNBtoETH || liveRates.binancecoin.eth,
+    //   BNBtoINR: BNBtoINR || liveRates.binancecoin.inr,
+
+    //   ETHtoBNB: ETHtoBNB || liveRates.ethereum.bnb,
+    //   ETHtoBTC: ETHtoBTC || liveRates.ethereum.btc,
+    //   ETHtoINR: ETHtoINR || liveRates.ethereum.inr,
+
+    //   INRtoBTC: INRtoBTC ||  (1 / liveRates.bitcoin.inr),
+    //   INRtoBNB: INRtoBNB ||(1/ liveRates.binancecoin.inr),
+    //   INRtoETH: INRtoETH ||(1/ liveRates.ethereum.eth),
+
+    //   BTCtoBNB: BTCtoBNB || liveRates.binancecoin.BTCBNB,
+    //   BTCtoETH: BTCtoETH || liveRates.ethereum.BTCETH,
+      
+    //   BTCtoINR: BTCtoINR || liveRates.bitcoin.BTCINR,
+    //   createdAt: currentDate,
+    // };
+
+
+    const exchangeRateData = {
+      BNBtoBTC: BNBtoBTC || BNBTOBTC,
+      BNBtoETH: BNBtoETH || BNBTOETH,
+      BNBtoINR: BNBtoINR || BNBINR,
+
+      ETHtoBNB: ETHtoBNB || ETHBNB,
+      ETHtoBTC: ETHtoBTC || ETHBTC,
+      ETHtoINR: ETHtoINR || ETHINR,
+
+      INRtoBTC: INRtoBTC || (1 / BTCINR),
+      INRtoBNB: INRtoBNB || (1 / BNBINR),
+      INRtoETH: INRtoETH || (1 / ETHINR),
+
+      BTCtoBNB: BTCtoBNB || BTCBNB,
+      BTCtoETH: BTCtoETH || BTCETH,
+
+      BTCtoINR: BTCtoINR || BTCINR,
+      createdAt: currentDate,
+    };
+
+    // Update the document in the database
+    const result = await Rate.updateOne(
+      { ExchangeID: 1 },
+      { $push: { Exchangerate: exchangeRateData } },
+      { upsert: true }
+    );
+
+    if (result) {
+      res.status(200).json({ message: 'Exchange rates added successfully', liveRates, exchangeRateData });
+    } else {
+      res.status(500).json({ message: 'Error adding exchange rates. Please try again later.' });
+    }
+  } catch (error) {
+    console.error('Error adding exchange rates:', error);
+    res.status(500).json({ message: 'Error adding exchange rates. Please try again later.', error: error.message });
+  }
+};
+
+// Set interval to fetch live rates every 5 minutes (300,000 milliseconds)
+setInterval(async () => {
+  await fetchLiveRates();
+  console.log('Live rates fetched.');
+}, 300000);
+
+
+--------------
+  const handleShowData = async () => {
+    try {
+      // Fetch live exchange rates from CoinGecko API
+      const response = await axios.get(
+        'https://api.coingecko.com/api/v3/simple/price',
+        {
+          params: {
+            ids: 'bitcoin,binancecoin,ethereum,inr',
+            vs_currencies: 'inr,btc,bnb,eth',
+          },
+        }
+      );
+  
+      const data = response.data;
+  
+      console.log("Full data structure:", data);
+  
+      if (!data) {
+        console.error('Error: Empty response from CoinGecko API');
+        return;
+      }
+  
+      // Construct pairs
+      const pairs = [
+        { source: 'inr', target: 'btc' },
+        { source: 'inr', target: 'bnb' },
+        { source: 'inr', target: 'eth' },
+
+        { source: 'btc', target: 'inr' },
+        { source: 'btc', target: 'bnb' },
+        { source: 'btc', target: 'eth' },
+        { source: 'bnb', target: 'inr' },
+        { source: 'bnb', target: 'btc' },
+        { source: 'bnb', target: 'eth' },
+        { source: 'eth', target: 'inr' },
+        { source: 'eth', target: 'btc' },
+        { source: 'eth', target: 'bnb' },
+      ];
+
+      const constructedPairs = {};
+  
+      // Calculate and print exchange rates for each pair
+      pairs.forEach(pair => {
+
+        const sourceCurrency = pair.source.toUpperCase();
+        const targetCurrency = pair.target.toUpperCase();
+       // console.log(pair.source);
+if(pair.source === 'inr' && pair.target=== 'btc'){
+  const exchangeRate = data.bitcoin.inr;
+  const pairKey = `${sourceCurrency}to${targetCurrency}`;
+
+  // Store the pair and exchange rate in the object
+  constructedPairs[pairKey] = (1/exchangeRate);
+
+}
+
+        if (pair.source === 'btc'){
+          console.log(data.bitcoin);
+        const exchangeRate = data.bitcoin[pair.target];
+        console.log(exchangeRate,);
+        const pairKey = `${sourceCurrency}to${targetCurrency}`;
+
+        // Store the pair and exchange rate in the object
+        constructedPairs[pairKey] = exchangeRate;
+        console.log(`${pair.source.toUpperCase()}to${pair.target.toUpperCase()}: ${exchangeRate}`);
+        }
+
+        else if (pair.source === 'bnb'){
+          console.log(data.binancecoin);
+        const exchangeRate = data.binancecoin[pair.target];
+        console.log(exchangeRate,);
+        const pairKey = `${sourceCurrency}to${targetCurrency}`;
+
+        // Store the pair and exchange rate in the object
+        constructedPairs[pairKey] = exchangeRate;
+        console.log(`${pair.source.toUpperCase()}to${pair.target.toUpperCase()}: ${exchangeRate}`);
+        }
+
+       else  if (pair.source === 'eth'){
+          console.log(data.ethereum);
+        const exchangeRate = data.ethereum[pair.target];
+        console.log(exchangeRate,);
+        const pairKey = `${sourceCurrency}to${targetCurrency}`;
+
+        // Store the pair and exchange rate in the object
+        constructedPairs[pairKey] = exchangeRate;
+        console.log(`${pair.source.toUpperCase()}to${pair.target.toUpperCase()}: ${exchangeRate}`);
+        }
+        console.log(constructedPairs);
+      });
+    } catch (error) {
+      console.error(`Error fetching data from CoinGecko API: ${error.message}`);
+    }
+  };
+
+
+----------
+
+
+  const fetchData = async () => {
+    try {
+      // Fetch live exchange rates from CoinGecko API
+      const response = await axios.get(
+        'https://api.coingecko.com/api/v3/simple/price',
+        {
+          params: {
+            ids: 'bitcoin,binancecoin,ethereum,inr',
+            vs_currencies: 'inr,btc,bnb,eth',
+          },
+        }
+      );
+  
+      const data = response.data;
+  
+      console.log("Full data structure:", data);
+  
+      if (!data) {
+        console.error('Error: Empty response from CoinGecko API');
+        return;
+      }
+  
+      // Construct pairs
+      const pairs = [
+        { source: 'inr', target: 'btc' },
+        { source: 'inr', target: 'bnb' },
+        { source: 'inr', target: 'eth' },
+
+        { source: 'btc', target: 'inr' },
+        { source: 'btc', target: 'bnb' },
+        { source: 'btc', target: 'eth' },
+        { source: 'bnb', target: 'inr' },
+        { source: 'bnb', target: 'btc' },
+        { source: 'bnb', target: 'eth' },
+        { source: 'eth', target: 'inr' },
+        { source: 'eth', target: 'btc' },
+        { source: 'eth', target: 'bnb' },
+      ];
+  
+      const constructedPairs = {};
+  
+      // Calculate and print exchange rates for each pair
+      pairs.forEach(pair => {
+        const sourceCurrency = pair.source.toUpperCase();
+        const targetCurrency = pair.target.toUpperCase();
+  
+        if (data[pair.source]) {
+          const exchangeRate = data[pair.source][pair.target];
+          const pairKey = `${sourceCurrency}to${targetCurrency}`;
+  
+          // Store the pair and exchange rate in the object
+          constructedPairs[pairKey] = exchangeRate;
+          console.log(`${pair.source.toUpperCase()}to${pair.target.toUpperCase()}: ${exchangeRate}`);
+        } else {
+          console.error(`Error: Data for ${pair.source} to ${pair.target} is missing`);
+        }
+      });
+  
+      // Access the constructed pairs object
+      console.log("Constructed Pairs:", constructedPairs);
+    } catch (error) {
+      console.error(`Error fetching data from CoinGecko API: ${error.message}`);
+    }
+  };
+  
+  // Fetch data initially
+  fetchData();
+  
+  // Set up interval to fetch data every 5 minutes (300,000 milliseconds)
+  setInterval(fetchData, 300000);
+  
+  
