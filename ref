@@ -1,5 +1,5 @@
 -------------
-
+await exports.addexchngerate({ body: {} }, { status: () => {} }); 
 
 // Function to fetch live rates from CoinGecko API
 const fetchLiveRates = async () => {
