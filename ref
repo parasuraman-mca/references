@@ -83,3 +83,333 @@ const PORT = 3001;
 server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
+
+
+
+
+==================
+// var createError = require('http-errors');
+// var express = require('express');
+// var path = require('path');
+// var cookieParser = require('cookie-parser');
+// var logger = require('morgan');
+
+// var indexRouter = require('./routes/index');
+// var usersRouter = require('./routes/users');
+// var bankRouter = require('./routes/bank')
+// var kycRouter = require('./routes/kycRouter')
+// var profileRouter = require('./routes/profile')
+// var twofactor = require('./routes/user/Twofactorauth')
+// var notification = require('./routes/user/notification')
+
+// var exchanerates = require('./routes/admin/adminroutes')
+// var exchangerates = require('./routes/exchangeRoutes') 
+
+// var adminauthendication = require('./routes/admin/adminauth')
+// var userdetails = require('./routes/admin/adminUsers')
+// var bankdetails = require('./routes/admin/Bankroutes')
+// var Kycverification = require('./routes/admin/adminkyc')
+// var adminprofile = require('./routes/admin/adminprofile')
+// var contentmanagementsystem = require('./routes/admin/contentmanagementsystem')
+ 
+// var app = express();
+
+// const connectToDatabase = require('./dataBaseConnection/database');
+// const cors = require('cors');
+
+// // view engine setup
+// app.set('views', path.join(__dirname, 'views'));
+// app.set('view engine', 'jade');
+
+// app.use(logger('dev'));
+// app.use(express.json());
+// app.use(express.urlencoded({ extended: false }));
+// app.use(cookieParser());
+// app.use(express.static(path.join(__dirname, 'public')));
+
+// app.use(cors());
+
+// app.use('/', indexRouter);
+// app.use('/users', usersRouter);
+// app.use('/users/two_factor',twofactor)
+// app.use('/users/bank',bankRouter);
+// app.use('/users/kyc',kycRouter);
+// app.use('/users/profile', profileRouter);
+// app.use('/users/exchange',exchangerates)
+// app.use('/users/notification',notification)
+
+
+// app.use('/admin',adminauthendication)
+//  app.use('/admin/exchanges',exchanerates)
+//  app.use('/admin/user',userdetails)
+//  app.use('/admin/bank',bankdetails)
+//   app.use('/admin/kyc',Kycverification)
+//  app.use('/admin/profile',adminprofile)
+//   app.use('/admin/CMS',contentmanagementsystem)
+
+
+// // catch 404 and forward to error handler
+// app.use(function(req, res, next) {
+//   next(createError(404));
+// });
+
+
+ 
+// // connect database
+//  connectToDatabase();
+
+  
+
+
+// // const allowedOrigins = ['http://localhost:3000', 'http://localhost:3000'];
+
+// // const corsOptions = {
+// //   origin: (origin, callback) => {
+// //     if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+// //       callback(null, true);
+// //     } else {
+// //       callback(new Error('Not allowed by CORS'));
+// //     }
+// //   },
+// // };
+
+// // app.use(cors(corsOptions));
+
+// // error handler
+// app.use(function(err, req, res, next) {
+//   // set locals, only providing error in development
+//   res.locals.message = err.message;
+//   res.locals.error = req.app.get('env') === 'development' ? err : {};
+
+//   // render the error page
+//   res.status(err.status || 500);
+//   res.render('error');
+// });
+
+// module.exports = app;
+
+
+// var createError = require('http-errors');
+// var express = require('express');
+// var path = require('path');
+// var cookieParser = require('cookie-parser');
+// var logger = require('morgan');
+
+// const http = require('http');
+// const socketIO = require('socket.io');
+
+// const server = http.createServer(app);
+// const io = socketIO(server);
+
+// // Socket.io setup
+// io.on('connection', (socket) => {
+//   console.log('A user connected');
+
+//   // Example: Handle a chat message
+//   socket.on('chatMessage', (message) => {
+//     console.log('Received message:', message);
+//     io.emit('chatMessage', message); // Broadcast the message to all connected clients
+//   });
+
+//   socket.on('disconnect', () => {
+//     console.log('User disconnected');
+//   });
+// });
+
+
+
+
+// var indexRouter = require('./routes/index');
+// var usersRouter = require('./routes/users');
+// var bankRouter = require('./routes/bank')
+// var kycRouter = require('./routes/kycRouter')
+// // var profileRouter = require('./routes/profile')
+
+// var exchanerates = require('./routes/admin/adminroutes')
+// var exchangerates = require('./routes/exchangeRoutes')
+// var AdminKyc = require('./routes/admin/adminkyc')
+// var Adminbank = require('./routes/admin/Bankroutes')
+
+// var adminauthendication = require('./routes/admin/adminauth')
+// var userdetails = require('./routes/admin/adminUsers')
+
+// var app = express();
+
+// const connectToDatabase = require('./dataBaseConnection/database');
+// const cors = require('cors');
+
+// // view engine setup
+// app.set('views', path.join(__dirname, 'views'));
+// app.set('view engine', 'jade');
+
+// app.use(logger('dev'));
+// app.use(express.json());
+// app.use(express.urlencoded({ extended: false }));
+// app.use(cookieParser());
+// app.use(express.static(path.join(__dirname, 'public')));
+
+// app.use(cors());
+
+// app.use('/', indexRouter);
+// app.use('/users', usersRouter);
+// app.use('/users/bank',bankRouter);
+// app.use('/users/kyc',kycRouter);
+// //app.use('/users/profile', profileRouter);
+// app.use('/users/exchange',exchangerates)
+
+// app.use('/admin',adminauthendication)
+//  app.use('/admin/exchanges',exchanerates)
+//  app.use('/admin/user',userdetails)
+//   app.use('/admin/kyc',AdminKyc)
+//   app.use('/admin/bank',Adminbank)
+// //  app.use('/adminprofile',exchanerates)
+// //  app.use('/admin/cms',exchanerates)
+
+
+// // catch 404 and forward to error handler
+// app.use(function(req, res, next) {
+//   next(createError(404));
+// });
+
+
+
+// // connect database
+//  connectToDatabase();
+
+
+
+
+// // const allowedOrigins = ['http://localhost:3000', 'http://localhost:3000'];
+
+// // const corsOptions = {
+// //   origin: (origin, callback) => {
+// //     if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+// //       callback(null, true);
+// //     } else {
+// //       callback(new Error('Not allowed by CORS'));
+// //     }
+// //   },
+// // };
+
+// // app.use(cors(corsOptions));
+
+// // error handler
+// app.use(function(err, req, res, next) {
+//   // set locals, only providing error in development
+//   res.locals.message = err.message;
+//   res.locals.error = req.app.get('env') === 'development' ? err : {};
+
+//   // render the error page
+//   res.status(err.status || 500);
+//   res.render('error');
+// });
+
+// // module.exports = app;
+
+// module.exports = { app,server };
+
+
+var createError = require('http-errors');
+var express = require('express');
+var path = require('path');
+var cookieParser = require('cookie-parser');
+var logger = require('morgan');
+const http = require('http');
+const socketIO = require('socket.io');
+
+const app = express();
+const server = http.createServer(app);
+const io = socketIO(server);
+
+
+
+
+const adminSocket = io.of('/admin');
+const userSocket = io.of('/kala');
+
+adminSocket.on('connection', (socket) => {
+  console.log('Admin connected');
+
+  socket.on('sendNotification', (data) => {
+    // Broadcast the notification to all user sockets
+    userSocket.emit('receiveNotification', data);
+  });
+
+  socket.on('disconnect', () => {
+    console.log('Admin disconnected');
+  });
+});
+
+userSocket.on('connection', (socket) => {
+  console.log('User connected');
+
+  socket.on('disconnect', () => {
+    console.log('User disconnected');
+  });
+});
+
+var indexRouter = require('./routes/index');
+var usersRouter = require('./routes/users');
+var bankRouter = require('./routes/bank');
+var kycRouter = require('./routes/kycRouter');
+// var profileRouter = require('./routes/profile')
+
+var exchanerates = require('./routes/admin/adminroutes');
+var exchangerates = require('./routes/exchangeRoutes');
+var AdminKyc = require('./routes/admin/adminkyc');
+var Adminbank = require('./routes/admin/Bankroutes');
+
+var adminauthendication = require('./routes/admin/adminauth');
+var userdetails = require('./routes/admin/adminUsers');
+
+const connectToDatabase = require('./dataBaseConnection/database');
+const cors = require('cors');
+
+// view engine setup
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'jade');
+
+app.use(logger('dev'));
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(express.static(path.join(__dirname, 'public')));
+
+app.use(cors());
+
+app.use('/', indexRouter);
+app.use('/users', usersRouter);
+app.use('/users/bank', bankRouter);
+app.use('/users/kyc', kycRouter);
+//app.use('/users/profile', profileRouter);
+app.use('/users/exchange', exchangerates);
+
+app.use('/admin', adminauthendication);
+app.use('/admin/exchanges', exchanerates);
+app.use('/admin/user', userdetails);
+app.use('/admin/kyc', AdminKyc);
+app.use('/admin/bank', Adminbank);
+
+// catch 404 and forward to error handler
+app.use(function (req, res, next) {
+  next(createError(404));
+});
+
+// connect database
+connectToDatabase();
+
+// error handler
+app.use(function (err, req, res, next) {
+  // set locals, only providing error in development
+  res.locals.message = err.message;
+  res.locals.error = req.app.get('env') === 'development' ? err : {};
+
+  // render the error page
+  res.status(err.status || 500);
+  res.render('error');
+});
+
+// module.exports = app;
+
+module.exports = app;
+===========
