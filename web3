@@ -1,0 +1,98 @@
+import React, { useState, useEffect } from 'react';
+import Web3 from 'web3';
+import { abiarray } from './abifile'; // improt your ABI from abifile.js
+
+const contractAddress = '0xae13d989daC2f0dEbFf460aC112a837C89BAa7cd';
+
+const EthWallet = () => {
+  const [web3, setWeb3] = useState(null);
+  const [contract, setContract] = useState(null);
+  const [account, setAccount] = useState(null);
+
+  // Initialize web3 and the contract
+  useEffect(() => {
+    const initWeb3 = async () => {
+      if (window.ethereum) {
+        try {
+          const web3Instance = new Web3(window.ethereum);
+          await window.ethereum.request({ method: 'eth_requestAccounts' });
+          const accounts = await web3Instance.eth.getAccounts();
+          const contractInstance = new web3Instance.eth.Contract(abiarray, contractAddress);
+
+          setWeb3(web3Instance);
+          setContract(contractInstance);
+          setAccount(accounts[0]);
+        } catch (error) {
+          console.error("Could not initialize web3", error);
+        }
+      } else {
+        console.log('Please install MetaMask or another BSC-compatible wallet!');
+      }
+    };
+
+    initWeb3();
+  }, []);
+
+  // Handle depositing BNB to get WBNB
+  const deposit = async () => {
+    if (!web3 || !account || !contract) {
+      console.error('Web3, account, or contract not initialized');
+      return;
+    }
+
+    const amountToDeposit = web3.utils.toWei('0.000001', 'ether'); // Set the amount you want to deposit
+
+    try {
+      await contract.methods.deposit().send({ from: account, value: amountToDeposit });
+      console.log(`Deposited 0.1 BNB to contract from ${account}`);
+    } catch (error) {
+      console.error('Error depositing', error);
+    }
+  };
+
+
+// Handle withdrawing WBNB to get BNB back
+const withdraw = async () => {
+    if (!web3 || !account || !contract) {
+      console.error('Web3, account, or contract not initialized');
+      return;
+    }
+  
+    const amountToWithdraw = web3.utils.toWei('0.000001', 'ether'); // Adjust the amount you want to withdraw
+  
+    try {
+      // Estimating the gas can fail if the transaction would revert
+      // Provide a fallback gas estimate if necessary or add error handling
+      const gasEstimate = await contract.methods.withdraw(amountToWithdraw).estimateGas({ from: account });
+      const currentNonce = await web3.eth.getTransactionCount(account, 'pending');
+
+      // Sending the actual transaction with the gas estimate
+      const tx = await contract.methods.withdraw(amountToWithdraw).send({ 
+        from: account,
+        gas: gasEstimate,
+        nonce: currentNonce,
+      });
+      console.log(`Withdrew 0.1 BNB from contract to ${account}`, tx);
+    } catch (error) {
+      console.error('Error withdrawing:', error);
+      alert(`Error during withdrawal: ${error.message}`);
+      // You might want to check if the error.message is useful for the end user
+      // Sometimes it's better to provide a generic error message for certain errors
+    }
+  };
+
+  
+
+  return (
+    <div className='mt-5 p-5'>
+      <h2>Wrap / Unwrap BNB</h2>
+      <button onClick={deposit}>Wrap 0.1 BNB</button>
+      <button onClick={withdraw}>Unwrap 0.1 WBNB</button>
+    </div>
+  );
+};
+
+export default EthWallet;
+---------------------------------
+
+https://testnet.bscscan.com/address/0xae13d989dac2f0debff460ac112a837c89baa7cd
